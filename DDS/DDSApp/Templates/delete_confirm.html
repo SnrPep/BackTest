@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Удалить запись</title>
+</head>
+<body>
+    <h1>Удалить запись</h1>
+    <p>Вы уверены, что хотите удалить эту запись?</p>
+
+    <ul>
+        <li>Дата создания: {{ record.created_at }}</li>
+        <li>Сумма: {{ record.amount }}</li>
+        <li>Категория: {{ record.category }}</li>
+        <li>Комментарий: {{ record.comment }}</li>
+    </ul>
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">Удалить</button>
+        <a href="{% url 'record_list' %}">Отмена</a>
+    </form>
+</body>
+</html>

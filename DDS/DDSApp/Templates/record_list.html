@@ -1,0 +1,156 @@
+<head>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Записи ДДС</h1>
+
+    <form method="get">
+        <label>Статус:</label>
+        <select name="status" id="status-select">
+            <option value="">-- Все --</option>
+            {% for stat in statuses %}
+                <option value="{{ stat.id }}" {% if stat.id|stringformat:"s" == selected_status %}selected{% endif %}>
+                    {{ stat.name }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <label>Тип:</label>
+        <select name="type" id="type-select">
+            <option value="">-- Все --</option>
+            {% for t in types %}
+                <option value="{{ t.id }}" {% if t.id|stringformat:"s" == selected_type %}selected{% endif %}>
+                    {{ t.name }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <label>Категория:</label>
+        <select name="category" id="category-select">
+            <option value="">-- Все --</option>
+            {% for cat in categories %}
+                <option value="{{ cat.id }}" {% if cat.id|stringformat:"s" == selected_category %}selected{% endif %}>
+                    {{ cat.name }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <label>Подкатегория:</label>
+        <select name="subcategory" id="subcategory-select">
+            <option value="">-- Все --</option>
+            {% for sub in subcategories %}
+                <option value="{{ sub.id }}" {% if sub.id|stringformat:"s" == selected_subcategory %}selected{% endif %}>
+                    {{ sub.name }}
+                </option>
+            {% endfor %}
+        </select>
+
+
+        <label>Дата с:</label>
+        <input type="date" name="start_date" value="{{ start_date }}">
+
+        <label>по:</label>
+        <input type="date" name="end_date" value="{{ end_date }}">
+
+        <label>Сортировать по дате:</label>
+        <select name="sort">
+            <option value="desc" {% if sort_order == 'desc' %}selected{% endif %}>По убыванию</option>
+            <option value="asc" {% if sort_order == 'asc' %}selected{% endif %}>По возрастанию</option>
+        </select>
+
+        <button type="submit">Фильтровать</button>
+        <a href="{% url 'record_list' %}">Сбросить</a>
+    </form>
+
+    <hr>
+
+    <table border="1">
+        <tr>
+            <th>Дата</th>
+            <th>Тип</th>
+            <th>Категория</th>
+            <th>Подкатегория</th>
+            <th>Сумма</th>
+            <th>Комментарий</th>
+            <th>Действия</th>
+        </tr>
+        {% for record in records %}
+            <tr>
+                <td>{{ record.created_at }}</td>
+                <td>{{ record.type }}</td>
+                <td>{{ record.category.name }}</td>
+                <td>{{ record.subcategory.name }}</td>
+                <td>{{ record.amount }}</td>
+                <td>{{ record.comment }}</td>
+                <td>
+                    <a href="{% url 'record_edit' record.pk %}">✏️</a>
+                    <a href="{% url 'record_delete' record.pk %}">🗑️</a>
+                </td>
+            </tr>
+        {% empty %}
+            <tr><td colspan="7">Нет записей</td></tr>
+        {% endfor %}
+    </table>
+
+    <script>
+    $(document).ready(function () {
+        // загрузка категорий при выборе типа
+        $('#type-select').change(function () {
+            let typeId = $(this).val();
+            $.ajax({
+                url: "{% url 'ajax_load_categories' %}",
+                data: { 'type': typeId },
+                success: function (data) {
+                    let categorySelect = $('#category-select');
+                    categorySelect.empty().append('<option value="">-- Все --</option>');
+                    data.forEach(item => categorySelect.append(
+                        `<option value="${item.id}">${item.name}</option>`
+                    ));
+                    $('#subcategory-select').empty().append('<option value="">-- Все --</option>');
+                }
+            });
+        });
+
+        // загрузка подкатегорий при выборе категории
+        $('#category-select').change(function () {
+            let categoryId = $(this).val();
+            $.ajax({
+                url: "{% url 'ajax_load_subcategories' %}",
+                data: { 'category': categoryId },
+                success: function (data) {
+                    let subSelect = $('#subcategory-select');
+                    subSelect.empty().append('<option value="">-- Все --</option>');
+                    data.forEach(item => subSelect.append(
+                        `<option value="${item.id}">${item.name}</option>`
+                    ));
+                }
+            });
+        });
+    });
+    </script>
+
+    <script>
+    $(document).ready(function () {
+        $('select[name="category"]').change(function () {
+            var url = "{% url 'ajax_load_subcategories' %}";
+            var categoryId = $(this).val();
+
+            $.ajax({
+                url: url,
+                data: {
+                    'category': categoryId
+                },
+                success: function (data) {
+                    const subcat = $('select[name="subcategory"]');
+                    subcat.empty();
+                    subcat.append('<option value="">-- Все --</option>');
+                    $.each(data, function (key, value) {
+                        subcat.append('<option value="' + value.id + '">' + value.name + '</option>');
+                    });
+                }
+            });
+        });
+    });
+    </script>
+
+</body>

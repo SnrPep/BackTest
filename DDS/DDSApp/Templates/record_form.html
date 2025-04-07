@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Запись ДДС</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Форма записи</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Сохранить</button>
+    </form>
+    <a href="{% url 'record_list' %}">← Назад</a>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#id_type').change(function () {
+                const url = "{% url 'ajax_load_categories' %}";
+                const typeVal = $(this).val();
+
+                $.ajax({
+                    url: url,
+                    data: {
+                        'type': typeVal
+                    },
+                    success: function (data) {
+                        $("#id_category").empty();
+                        $("#id_category").append('<option value="">---------</option>');
+                        $.each(data, function (key, value) {
+                            $("#id_category").append(
+                                $('<option></option>').attr('value', value.id).text(value.name)
+                            );
+                        });
+                        $("#id_subcategory").empty(); // очистить подкатегории
+                        $("#id_subcategory").append('<option value="">---------</option>');
+                    }
+                });
+            });
+
+            $('#id_category').change(function () {
+                const url = "{% url 'ajax_load_subcategories' %}";
+                const categoryId = $(this).val();
+
+                $.ajax({
+                    url: url,
+                    data: {
+                        'category': categoryId
+                    },
+                    success: function (data) {
+                        $("#id_subcategory").empty();
+                        $("#id_subcategory").append('<option value="">---------</option>');
+                        $.each(data, function (key, value) {
+                            $("#id_subcategory").append(
+                                $('<option></option>').attr('value', value.id).text(value.name)
+                            );
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
