@@ -86,16 +86,6 @@ def edit_handbook_item(request, model_name, pk):
         'object': obj,
     })
 
-def load_categories(request):
-    type_id = request.GET.get('type')
-    categories = Category.objects.filter(type_id=type_id).values('id', 'name')
-    return JsonResponse(list(categories), safe=False)
-
-def load_subcategories(request):
-    category_id = request.GET.get('category')
-    subcategories = Subcategory.objects.filter(category_id=category_id).values('id', 'name')
-    return JsonResponse(list(subcategories), safe=False)
-
 
 def record_delete(request, pk):
     record = get_object_or_404(DDSRecord, pk=pk)

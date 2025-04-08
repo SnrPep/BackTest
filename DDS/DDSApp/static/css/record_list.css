@@ -15,26 +15,7 @@ form {
     border-radius: 10px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     margin-bottom: 30px;
-}
-
-.filter-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 15px;
-    align-items: end;
-}
-
-.filter-grid div {
-    display: flex;
-    flex-direction: column;
-}
-
-.date-range {
-    grid-column: 1 / -1;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    align-items: center;
+    margin-top: 20px;
 }
 
 .button-group {
@@ -53,6 +34,7 @@ form input[type="date"] {
     padding: 5px;
     border-radius: 5px;
     border: 1px solid #ccc;
+    margin-top: 15px;
 }
 
 form button,
@@ -64,6 +46,7 @@ form a {
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    margin-left: 10px;
 }
 
 form a {
@@ -104,4 +87,25 @@ td a {
 
 td a:hover {
     text-decoration: underline;
+}
+
+.create-button {
+    display: inline-block;
+    padding: 8px 16px;
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.create-button:hover {
+    background-color: #154b82;
+}
+
+.record-actions {
+    margin-top: 20px;
+    margin-bottom: 10px;
 }
