@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Управление справочниками</title>
+</head>
+<body>
+    <h1>Управление справочниками</h1>
+
+    <h2>Статусы</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ status_form.as_p }}
+        <button type="submit" name="save_status">Добавить</button>
+    </form>
+    <ul>
+        {% for s in statuses %}
+            <li>
+                {{ s.name }}
+                [<a href="{% url 'edit_handbook_item' 'status' s.id %}">Редактировать</a>]
+                [<a href="{% url 'delete_handbook_item' 'status' s.id %}" onclick="return confirm('Удалить?');">Удалить</a>]
+            </li>
+        {% endfor %}
+    </ul>
+
+    <h2>Типы</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ type_form.as_p }}
+        <button type="submit" name="save_type">Добавить</button>
+    </form>
+    <ul>
+        {% for t in types %}
+            <li>
+                {{ t.name }}
+                [<a href="{% url 'edit_handbook_item' 'type' t.id %}">Редактировать</a>]
+                [<a href="{% url 'delete_handbook_item' 'type' t.id %}" onclick="return confirm('Удалить?');">Удалить</a>]
+            </li>
+        {% endfor %}
+    </ul>
+
+    <h2>Категории</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ category_form.as_p }}
+        <button type="submit" name="save_category">Добавить</button>
+    </form>
+    <ul>
+        {% for c in categories %}
+            <li>
+                {{ c.name }} (Тип: {{ c.type.name }})
+                [<a href="{% url 'edit_handbook_item' 'category' c.id %}">Редактировать</a>]
+                [<a href="{% url 'delete_handbook_item' 'category' c.id %}" onclick="return confirm('Удалить?');">Удалить</a>]
+            </li>
+        {% endfor %}
+    </ul>
+
+    <h2>Подкатегории</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ subcategory_form.as_p }}
+        <button type="submit" name="save_subcategory">Добавить</button>
+    </form>
+    <ul>
+        {% for sc in subcategories %}
+            <li>
+                {{ sc.name }} (Категория: {{ sc.category.name }})
+                [<a href="{% url 'edit_handbook_item' 'subcategory' sc.id %}">Редактировать</a>]
+                [<a href="{% url 'delete_handbook_item' 'subcategory' sc.id %}" onclick="return confirm('Удалить?');">Удалить</a>]
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

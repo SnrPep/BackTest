@@ -1,5 +1,5 @@
 from django import forms
-from .models import DDSRecord, Category, Subcategory
+from .models import DDSRecord, Category, Subcategory, Type, Status
 
 class DDSRecordForm(forms.ModelForm):
     class Meta:
@@ -29,3 +29,23 @@ class DDSRecordForm(forms.ModelForm):
                 pass
         elif self.instance.pk and self.instance.category:
             self.fields['subcategory'].queryset = self.instance.category.subcategories.all()
+
+class StatusForm(forms.ModelForm):
+    class Meta:
+        model = Status
+        fields = ['name']
+
+class TypeForm(forms.ModelForm):
+    class Meta:
+        model = Type
+        fields = ['name']
+
+class CategoryForm(forms.ModelForm):
+    class Meta:
+        model = Category
+        fields = ['name', 'type']
+
+class SubcategoryForm(forms.ModelForm):
+    class Meta:
+        model = Subcategory
+        fields = ['name', 'category']

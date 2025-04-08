@@ -6,12 +6,10 @@
 
     <form method="get">
         <label>Статус:</label>
-        <select name="status" id="status-select">
+        <select name="status">
             <option value="">-- Все --</option>
-            {% for stat in statuses %}
-                <option value="{{ stat.id }}" {% if stat.id|stringformat:"s" == selected_status %}selected{% endif %}>
-                    {{ stat.name }}
-                </option>
+            {% for s in statuses %}
+                <option value="{{ s.id }}" {% if s.id|stringformat:"s" == selected_status %}selected{% endif %}>{{ s.name }}</option>
             {% endfor %}
         </select>
 
@@ -44,7 +42,6 @@
                 </option>
             {% endfor %}
         </select>
-
 
         <label>Дата с:</label>
         <input type="date" name="start_date" value="{{ start_date }}">
@@ -83,8 +80,8 @@
                 <td>{{ record.amount }}</td>
                 <td>{{ record.comment }}</td>
                 <td>
-                    <a href="{% url 'record_edit' record.pk %}">✏️</a>
-                    <a href="{% url 'record_delete' record.pk %}">🗑️</a>
+                    <a href="{% url 'record_edit' record.pk %}">Изменить</a>
+                    <a href="{% url 'record_delete' record.pk %}">Удалить</a>
                 </td>
             </tr>
         {% empty %}

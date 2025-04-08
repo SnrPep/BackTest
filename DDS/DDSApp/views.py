@@ -1,8 +1,79 @@
 from .models import DDSRecord, Subcategory, Category, Type, Status
-from .forms import DDSRecordForm
+from .forms import DDSRecordForm, StatusForm, TypeForm, CategoryForm, SubcategoryForm
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.dateparse import parse_date
 from django.http import JsonResponse
+from django.forms import modelform_factory
+from django.contrib import messages
+
+MODEL_MAP = {
+    'status': Status,
+    'type': Type,
+    'category': Category,
+    'subcategory': Subcategory,
+}
+
+def handbook_view(request):
+    if request.method == 'POST':
+        if 'save_status' in request.POST:
+            form = StatusForm(request.POST)
+            if form.is_valid():
+                form.save()
+                return redirect('handbook')
+        elif 'save_type' in request.POST:
+            form = TypeForm(request.POST)
+            if form.is_valid():
+                form.save()
+                return redirect('handbook')
+        elif 'save_category' in request.POST:
+            form = CategoryForm(request.POST)
+            if form.is_valid():
+                form.save()
+                return redirect('handbook')
+        elif 'save_subcategory' in request.POST:
+            form = SubcategoryForm(request.POST)
+            if form.is_valid():
+                form.save()
+                return redirect('handbook')
+
+    context = {
+        'status_form': StatusForm(),
+        'type_form': TypeForm(),
+        'category_form': CategoryForm(),
+        'subcategory_form': SubcategoryForm(),
+        'statuses': Status.objects.all(),
+        'types': Type.objects.all(),
+        'categories': Category.objects.select_related('type'),
+        'subcategories': Subcategory.objects.select_related('category'),
+    }
+    return render(request, 'handbook.html', context)
+
+def delete_handbook_item(request, model_name, pk):
+    model = MODEL_MAP.get(model_name)
+    if model:
+        obj = get_object_or_404(model, pk=pk)
+        obj.delete()
+        messages.success(request, f"{model_name.capitalize()} удалён.")
+    return redirect('handbook')
+
+def edit_handbook_item(request, model_name, pk):
+    model = MODEL_MAP.get(model_name)
+    if not model:
+        return redirect('handbook')
+    obj = get_object_or_404(model, pk=pk)
+    FormClass = modelform_factory(model, fields='__all__')
+    if request.method == 'POST':
+        form = FormClass(request.POST, instance=obj)
+        if form.is_valid():
+            form.save()
+            return redirect('handbook')
+    else:
+        form = FormClass(instance=obj)
+    return render(request, 'edit_handbook_item.html', {
+        'form': form,
+        'model_name': model_name,
+        'object': obj
+    })
 
 def load_categories(request):
     type_id = request.GET.get('type')
@@ -56,7 +127,7 @@ def record_list(request):
     if subcategory_id:
         records = records.filter(subcategory_id=subcategory_id)
     if status_id:
-        statuses = records.filter(status_id=status_id)
+        records = records.filter(status_id=status_id)
     if start_date:
         records = records.filter(created_at__gte=parse_date(start_date))
     if end_date:
