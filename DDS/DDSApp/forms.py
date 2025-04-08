@@ -5,6 +5,15 @@ class DDSRecordForm(forms.ModelForm):
     class Meta:
         model = DDSRecord
         fields = '__all__'
+        labels = {
+            'status': 'Статус',
+            'type': 'Тип',
+            'category': 'Категория',
+            'subcategory': 'Подкатегория',
+            'amount': 'Сумма в рублях',
+            'comment': 'Комментарий',
+            'created_at': 'Дата создания',
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -34,18 +43,32 @@ class StatusForm(forms.ModelForm):
     class Meta:
         model = Status
         fields = ['name']
+        labels = {
+            'name': 'Название',
+        }
 
 class TypeForm(forms.ModelForm):
     class Meta:
         model = Type
         fields = ['name']
+        labels = {
+            'name': 'Название',
+        }
 
 class CategoryForm(forms.ModelForm):
     class Meta:
         model = Category
         fields = ['name', 'type']
+        labels = {
+            'name': 'Название',
+            'type': 'Тип',
+        }
 
 class SubcategoryForm(forms.ModelForm):
     class Meta:
         model = Subcategory
         fields = ['name', 'category']
+        labels = {
+            'name': 'Название',
+            'category': 'Категория',
+        }

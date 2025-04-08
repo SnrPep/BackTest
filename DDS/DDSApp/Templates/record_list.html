@@ -1,6 +1,11 @@
+{% load static %}
 <head>
+    <meta charset="UTF-8">
+    <title>Записи ДДС</title>
+    <link rel="stylesheet" href="{% static 'css/record_list.css' %}">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
+
 <body>
     <h1>Записи ДДС</h1>
 
@@ -43,13 +48,14 @@
             {% endfor %}
         </select>
 
-        <label>Дата с:</label>
+        <br>
+        <label>Дата создания с:</label>
         <input type="date" name="start_date" value="{{ start_date }}">
 
         <label>по:</label>
         <input type="date" name="end_date" value="{{ end_date }}">
 
-        <label>Сортировать по дате:</label>
+        <label>Сортировать дату:</label>
         <select name="sort">
             <option value="desc" {% if sort_order == 'desc' %}selected{% endif %}>По убыванию</option>
             <option value="asc" {% if sort_order == 'asc' %}selected{% endif %}>По возрастанию</option>
@@ -63,7 +69,8 @@
 
     <table border="1">
         <tr>
-            <th>Дата</th>
+            <th>Дата создания</th>
+            <th>Статус</th>
             <th>Тип</th>
             <th>Категория</th>
             <th>Подкатегория</th>
@@ -74,6 +81,7 @@
         {% for record in records %}
             <tr>
                 <td>{{ record.created_at }}</td>
+                <td>{{ record.status }}</td>
                 <td>{{ record.type }}</td>
                 <td>{{ record.category.name }}</td>
                 <td>{{ record.subcategory.name }}</td>

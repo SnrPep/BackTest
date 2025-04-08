@@ -1,16 +1,21 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
 <head>
     <title>Удалить запись</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/handbook.css' %}">
 </head>
+
 <body>
     <h1>Удалить запись</h1>
     <p>Вы уверены, что хотите удалить эту запись?</p>
 
     <ul>
         <li>Дата создания: {{ record.created_at }}</li>
-        <li>Сумма: {{ record.amount }}</li>
+        <li>Статус: {{ record.status }}</li>
         <li>Категория: {{ record.category }}</li>
+        <li>Подкатегория: {{ record.subcategory }}</li>
+        <li>Сумма: {{ record.amount }}</li>
         <li>Комментарий: {{ record.comment }}</li>
     </ul>
 

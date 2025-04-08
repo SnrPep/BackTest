@@ -38,7 +38,6 @@ class Subcategory(models.Model):
 
 class DDSRecord(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
     status = models.ForeignKey(Status, on_delete=models.PROTECT)
     type = models.ForeignKey(Type, on_delete=models.PROTECT)
     category = models.ForeignKey(Category, on_delete=models.PROTECT)

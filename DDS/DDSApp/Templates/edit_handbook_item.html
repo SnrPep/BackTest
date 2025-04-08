@@ -1,8 +1,10 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <title>Редактировать {{ model_name }}</title>
+    <link rel="stylesheet" href="{% static 'css/edit_handbook_item.css' %}">
 </head>
 <body>
     <h1>Редактировать {{ model_name }}: {{ object }}</h1>

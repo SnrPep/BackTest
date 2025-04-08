@@ -56,23 +56,34 @@ def delete_handbook_item(request, model_name, pk):
         messages.success(request, f"{model_name.capitalize()} удалён.")
     return redirect('handbook')
 
+FORM_MAP = {
+    'status': StatusForm,
+    'type': TypeForm,
+    'category': CategoryForm,
+    'subcategory': SubcategoryForm,
+}
+
 def edit_handbook_item(request, model_name, pk):
     model = MODEL_MAP.get(model_name)
-    if not model:
+    form_class = FORM_MAP.get(model_name)
+
+    if not model or not form_class:
         return redirect('handbook')
+
     obj = get_object_or_404(model, pk=pk)
-    FormClass = modelform_factory(model, fields='__all__')
+
     if request.method == 'POST':
-        form = FormClass(request.POST, instance=obj)
+        form = form_class(request.POST, instance=obj)
         if form.is_valid():
             form.save()
             return redirect('handbook')
     else:
-        form = FormClass(instance=obj)
+        form = form_class(instance=obj)
+
     return render(request, 'edit_handbook_item.html', {
         'form': form,
         'model_name': model_name,
-        'object': obj
+        'object': obj,
     })
 
 def load_categories(request):
