@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.timezone import now
 
 class Status(models.Model):
     name = models.CharField(max_length=50, unique=True)
@@ -37,7 +38,7 @@ class Subcategory(models.Model):
         db_table = 'Subcategory'
 
 class DDSRecord(models.Model):
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateField(default=now)
     status = models.ForeignKey(Status, on_delete=models.PROTECT)
     type = models.ForeignKey(Type, on_delete=models.PROTECT)
     category = models.ForeignKey(Category, on_delete=models.PROTECT)
