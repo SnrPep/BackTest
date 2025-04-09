@@ -16,13 +16,13 @@
     git clone https://github.com/SnrPep/BackTest.git
   
 **2. Зайдите в Docker, перейдите в директорию с проектом и напишите**
-Для запуска проекта:
+- Для запуска проекта:
 
-    docker-compose up -d
+    `docker-compose up -d`
 
-Для остановки проекта:
+-  Для остановки проекта:
 
-    docker-compose down
+    `docker-compose down`
   
  **Перейдите по ссылке**
  
