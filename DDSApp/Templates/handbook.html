@@ -10,6 +10,10 @@
 <body>
     <h1>Управление справочниками</h1>
 
+    <div class="record-actions">
+        <a href="{% url 'record_list' %}" class="create-button">Записи</a>
+    </div>
+
     <h2>Статусы</h2>
     <form method="post">
         {% csrf_token %}
