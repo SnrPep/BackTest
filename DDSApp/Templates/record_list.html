@@ -105,7 +105,10 @@
 
     <script>
     $(document).ready(function () {
-        // загрузка категорий при выборе типа
+        const selectedCategory = "{{ selected_category|default:'' }}";
+        const selectedSubcategory = "{{ selected_subcategory|default:'' }}";
+
+        //Загрузка категорий при выборе типа
         $('#type-select').change(function () {
             let typeId = $(this).val();
             $.ajax({
@@ -114,15 +117,18 @@
                 success: function (data) {
                     let categorySelect = $('#category-select');
                     categorySelect.empty().append('<option value="">-- Все --</option>');
-                    data.forEach(item => categorySelect.append(
-                        `<option value="${item.id}">${item.name}</option>`
-                    ));
+
+                    data.forEach(item => {
+                        const selected = item.id.toString() === selectedCategory ? 'selected' : '';
+                        categorySelect.append(`<option value="${item.id}" ${selected}>${item.name}</option>`);
+                    });
+
                     $('#subcategory-select').empty().append('<option value="">-- Все --</option>');
                 }
             });
         });
 
-        // загрузка подкатегорий при выборе категории
+        // Загрузка подкатегорий при выборе категории
         $('#category-select').change(function () {
             let categoryId = $(this).val();
             $.ajax({
@@ -131,32 +137,10 @@
                 success: function (data) {
                     let subSelect = $('#subcategory-select');
                     subSelect.empty().append('<option value="">-- Все --</option>');
-                    data.forEach(item => subSelect.append(
-                        `<option value="${item.id}">${item.name}</option>`
-                    ));
-                }
-            });
-        });
-    });
-    </script>
 
-    <script>
-    $(document).ready(function () {
-        $('select[name="category"]').change(function () {
-            var url = "{% url 'ajax_load_subcategories' %}";
-            var categoryId = $(this).val();
-
-            $.ajax({
-                url: url,
-                data: {
-                    'category': categoryId
-                },
-                success: function (data) {
-                    const subcat = $('select[name="subcategory"]');
-                    subcat.empty();
-                    subcat.append('<option value="">-- Все --</option>');
-                    $.each(data, function (key, value) {
-                        subcat.append('<option value="' + value.id + '">' + value.name + '</option>');
+                    data.forEach(item => {
+                        const selected = item.id.toString() === selectedSubcategory ? 'selected' : '';
+                        subSelect.append(`<option value="${item.id}" ${selected}>${item.name}</option>`);
                     });
                 }
             });

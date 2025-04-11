@@ -6,6 +6,7 @@ from django.http import JsonResponse
 from django.forms import modelform_factory
 from django.contrib import messages
 
+#Справочники
 MODEL_MAP = {
     'status': Status,
     'type': Type,
@@ -48,6 +49,7 @@ def handbook_view(request):
     }
     return render(request, 'handbook.html', context)
 
+#Удаление справочников
 def delete_handbook_item(request, model_name, pk):
     model = MODEL_MAP.get(model_name)
     if model:
@@ -56,6 +58,7 @@ def delete_handbook_item(request, model_name, pk):
         messages.success(request, f"{model_name.capitalize()} удалён.")
     return redirect('handbook')
 
+#Редактирование справочников
 FORM_MAP = {
     'status': StatusForm,
     'type': TypeForm,
@@ -86,15 +89,7 @@ def edit_handbook_item(request, model_name, pk):
         'object': obj,
     })
 
-
-def record_delete(request, pk):
-    record = get_object_or_404(DDSRecord, pk=pk)
-    if request.method == "POST":
-        record.delete()
-        return redirect('record_list')
-    return render(request, 'delete_confirm.html', {'record': record})
-
-
+#Обновление категории и подкатегории
 def load_categories(request):
     type_value = request.GET.get('type')
     categories = Category.objects.filter(type=type_value).order_by('name')
@@ -106,6 +101,7 @@ def load_subcategories(request):
     return JsonResponse(list(subcategories.values('id', 'name')), safe=False)
 
 
+#Фильтры и сортировка
 def record_list(request):
     records = DDSRecord.objects.all().order_by('-created_at')
     categories = Category.objects.all()
@@ -120,6 +116,12 @@ def record_list(request):
     start_date = request.GET.get('start_date')
     end_date = request.GET.get('end_date')
     sort_order = request.GET.get('sort', 'desc')
+
+    #Фильтрация категорий и подкатегорий при загрузке страницы
+    if type_id:
+        categories = categories.filter(type_id=type_id)
+    if category_id:
+        subcategories = subcategories.filter(category_id=category_id)
 
     if type_id:
         records = records.filter(type_id=type_id)
@@ -155,7 +157,7 @@ def record_list(request):
     return render(request, 'record_list.html', context)
 
 
-
+#Создание записи
 def record_create(request):
     if request.method == 'POST':
         form = DDSRecordForm(request.POST)
@@ -166,7 +168,7 @@ def record_create(request):
         form = DDSRecordForm()
     return render(request, 'record_form.html', {'form': form})
 
-
+#Релактирование записи
 def record_edit(request, pk):
     record = get_object_or_404(DDSRecord, pk=pk)
     if request.method == 'POST':
@@ -177,3 +179,11 @@ def record_edit(request, pk):
     else:
         form = DDSRecordForm(instance=record)
     return render(request, 'record_form.html', {'form': form})
+
+#Удаление записи
+def record_delete(request, pk):
+    record = get_object_or_404(DDSRecord, pk=pk)
+    if request.method == "POST":
+        record.delete()
+        return redirect('record_list')
+    return render(request, 'delete_confirm.html', {'record': record})
